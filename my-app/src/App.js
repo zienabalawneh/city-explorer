@@ -1,25 +1,92 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import axios from 'axios';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+
+
+
+class App extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      searchQ: '',
+      Data: '',
+      displayMap: false,
+      errorMess: false
+    }
+  }
+
+  location = async (e) => {
+    e.preventDefault();
+    let LocUrl = `https://eu1.locationiq.com/v1/search.php?key=f5de8e48adbdc6&q=${this.state.searchQ}&format=json`;
+
+    try {
+
+
+      let loc = await axios.get(LocUrl);
+
+      this.setState({
+        Data: loc.data[0],
+        displayMap: true
+      })
+
+    }
+
+    catch {
+      this.setState({
+        displayMap: false,
+        errorMess: true
+      })
+    }
+
+  }
+
+
+  updateSearchQ = (e) => {
+    this.setState({ searchQ: e.target.value, })
+  }
+
+
+  render() {
+
+
+
+    return (
+
+
+      <>
+        <h1>City Explorer</h1>
+        <form onSubmit={this.location}  >
+          <input type="text" placeholder="add a city" onChange={this.updateSearchQ} />
+
+          <input type="submit" placeholder="LOCATION" />
+        </form>
+
+        <p>{this.state.Data.display_name}</p>
+
+        { this.state.displayMap &&
+          <img
+            src={`https://maps.locationiq.com/v3/staticmap?key=f5de8e48adbdc6&center=${this.state.Data.lat},${this.state.Data.lon}`} alt=''/>
+        }
+
+      </>
+
+
+
+
+    );
+
+
+
+
+
+
+  }
+
+
+
 }
 
 export default App;
