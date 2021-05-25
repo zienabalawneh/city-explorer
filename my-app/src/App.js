@@ -1,8 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-
-
-
+import Weather from './componant/Weather';
 
 
 class App extends React.Component {
@@ -14,18 +12,23 @@ class App extends React.Component {
       searchQ: '',
       Data: '',
       displayMap: false,
-      errorMess: false
+      errorMess: false,
+
     }
   }
 
   location = async (e) => {
     e.preventDefault();
+
+
+
     let LocUrl = `https://eu1.locationiq.com/v1/search.php?key=f5de8e48adbdc6&q=${this.state.searchQ}&format=json`;
+
 
     try {
 
-
       let loc = await axios.get(LocUrl);
+
 
       this.setState({
         Data: loc.data[0],
@@ -36,7 +39,7 @@ class App extends React.Component {
 
     catch {
       this.setState({
-        displayMap: false,
+        displayMap: true,
         errorMess: true
       })
     }
@@ -67,10 +70,11 @@ class App extends React.Component {
         <p>{this.state.Data.display_name}</p>
 
         { this.state.displayMap &&
-          <img
-            src={`https://maps.locationiq.com/v3/staticmap?key=f5de8e48adbdc6&center=${this.state.Data.lat},${this.state.Data.lon}`} alt=''/>
+          <img src={`https://maps.locationiq.com/v3/staticmap?key=f5de8e48adbdc6&center=${this.state.Data.lat},${this.state.Data.lon}`} alt='' />
         }
-
+          {this.state.displayMap&&
+          
+          <Weather cityName={this.state.searchQ} displayMap={this.state.displayMap} lat={this.state.Data.lat} lon={this.state.Data.lon} /> }
       </>
 
 
